@@ -1,0 +1,2 @@
+COMPONENT = TankMainAppC
+include $(MAKERULES)
