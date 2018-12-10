@@ -7,4 +7,7 @@ typedef nx_struct Message{
 	nx_uint16_t data;
 }Message;
 
+enum{
+	AM_BLINKTORADIO = 6
+}
 #endif
