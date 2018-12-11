@@ -9,5 +9,5 @@ typedef nx_struct Message{
 
 enum{
 	AM_BLINKTORADIO = 6
-}
+};
 #endif

@@ -1,15 +1,15 @@
 #include <Timer.h>
 #include "TankMain.h"
 
-configuration BlinkToRadioAppC {
+configuration TankMainAppC {
 }
 implementation {
   components MainC;
   components LedsC;
-  components TankMain as App;
+  components TankMainC as App;
   components ActiveMessageC;
   components new AMReceiverC(AM_BLINKTORADIO);
-  components TankAction as tank;
+  components TankActionC as tank;
   App.Boot -> MainC;
   App.Leds -> LedsC;
   App.AMControl -> ActiveMessageC;

@@ -1,7 +1,5 @@
-#include <Timer.h>
 #include "TankMain.h"
 #include "../message.h"
-
 module TankMainC {
   uses interface Boot;
   uses interface Leds;
@@ -11,10 +9,13 @@ module TankMainC {
 }
 implementation {
   Message Msg[BUFFER_LEN];
-  nx_uint8_t begin = 0;
-  nx_uint8_t end = 0;
-  bool busy = false;
+  Message *now;
+  nx_uint8_t begin;
+  nx_uint8_t end;
+  bool busy = FALSE;
   event void Boot.booted() {
+    begin = 0;
+    end = 0;
     call AMControl.start();
   }
   void cpMessage(Message* msg){
@@ -36,8 +37,8 @@ implementation {
   void runcommand(){
     if((begin==end)||(busy)) return;//buffer is empty or is sending command
     //run
-	busy = true;
-	Message* now = Msg[begin];
+	busy = TRUE;
+	now = Msg+begin;/*
 	if(now->type == 0x01){
 	  call tank.Steer1(now->value);
 	}
@@ -61,20 +62,21 @@ implementation {
 	}
 	else if(now->type == 0x08){
 	  call tank.Steer3(now->value);
-	}
+	}*/
+	call tank.action(now->type, now->data);
 	begin = (begin + 1)%BUFFER_LEN;
   }
   
-  event void car.ActionDone(){
-    busy = false;
-	call runcommand();
+  event void tank.ActionDone(){
+    busy = FALSE;
+    runcommand();
   }
   
   event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
     if ((len == sizeof(Message))&&((end+1)%BUFFER_LEN!=begin)) {
       Message* btrpkt = (Message*)payload;
-      call cpMessage(btrpkt);//add to waiting list
-	  call runcommand();
+      cpMessage(btrpkt);//add to waiting list
+      runcommand();
     }
     return msg;
   }
