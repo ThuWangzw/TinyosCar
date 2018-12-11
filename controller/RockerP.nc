@@ -3,18 +3,15 @@
 #include <TinyError.h>
 #include "../message.h"
 
-module RockerP()
+module RockerP
 {
-  provides{
-    interface RockerPosition;
-    interface AdcConfigure<const msp430adc12_channel_config_t*> as ConfigX;
-    interface AdcConfigure<const msp430adc12_channel_config_t*> as ConfigY;
-  }
-  uses{
-    interface Read<uint16_t> as ReadX;
-    interface Read<uint16_t> as ReadY;
-    interface Timer<TMilli> as Timer;  
-  }
+  provides interface RockerPosition;
+  provides interface AdcConfigure<const msp430adc12_channel_config_t*> as ConfigX;
+  provides interface AdcConfigure<const msp430adc12_channel_config_t*> as ConfigY;
+
+  uses interface Read<uint16_t> as ReadX;
+  uses interface Read<uint16_t> as ReadY;
+  uses interface Timer<TMilli> as Timer;  
 }
 implementation
 {

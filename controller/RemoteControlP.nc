@@ -1,33 +1,30 @@
 #include <math.h>
+#include "../message.h"
 
-module RemoteControlP(){
-    uses{
-        interface Boot;
-        
-        //Rocker & Button
-        interface RockerPostion as Rocker;
+module RemoteControlP{
+    uses interface Boot;   
 
-        //mote-mote sending interfaces
-        interface Packet;
-        interface AMPacket;
-        interface AMSend;
-        interface SplitControl as AMControl;
-    }
+    uses interface RockerPosition;
+
+    uses interface Packet;
+    uses interface AMPacket;
+    uses interface AMSend;
+    uses interface SplitControl as AMControl;
 }
 
 implementation{
-    bool is_transfer = false;
+    bool is_transfer = FALSE;
     message_t pkt;
     uint16_t pre_posx = 0,pre_posy = 0;
 
-    void send_message(struct Message tmp){
+    void send_message(uint8_t m_type, uint16_t m_data){
         if(!is_transfer){
-            Message *msgpkt = (Message *)(call Packet.getPayLoad(&pkt,sizeof(Message)));
-            msgpkt -> nodeid = tmp.nodeid;
-            msgpkt -> type = tmp.type;
-            msgpkt -> data = tmp.data;
+            Message *msgpkt = (Message *)(call Packet.getPayload(&pkt,sizeof(Message)));
+            msgpkt -> nodeid = RECEIVER_NODE_ID;
+            msgpkt -> type = m_type;
+            msgpkt -> data = m_data;
             if(call AMSend.send(AM_BROADCAST_ADDR,&pkt,sizeof(Message)) == SUCCESS)
-                is_transfer = true;
+                is_transfer = TRUE;
         }
     }
 
@@ -36,15 +33,15 @@ implementation{
     }
 
     event void AMSend.sendDone(message_t * m, error_t error){
-        if( &msg == m )
-            is_transfer = false;
+        if( &pkt == m )
+            is_transfer = FALSE;
     }
 
     event void AMControl.startDone(error_t error){
         if (error == SUCCESS){
             //radio initialization succeed
             //entrance of the Rocker & Button
-            call Rocker.start();
+            call RockerPosition.start();
 
         }
         else{
@@ -52,8 +49,12 @@ implementation{
         }
     }
 
+    event void AMControl.stopDone(error_t error){
+
+    }
+
     //Rocker event
-    event void Rocker.processPos(uint16_t posx,uint16_t posy){
+    event void RockerPosition.processPos(uint16_t posx,uint16_t posy){
         
     }
 

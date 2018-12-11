@@ -1,4 +1,4 @@
-configuration RockerC()
+configuration RockerC
 {
   provides{
     interface RockerPosition;
