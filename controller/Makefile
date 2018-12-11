@@ -1,0 +1,2 @@
+COMPONENT=RemoteControlP
+include $(MAKERULES)
