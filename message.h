@@ -14,4 +14,5 @@ enum{
 #define SAMPLE_FREQUENCY 200
 #define SENDER_NODE_ID 1
 #define RECEIVER_NODE_ID 2
+
 #endif

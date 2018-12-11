@@ -1,4 +1,4 @@
 # Mac OS file
 .DS_Store 
 */.DS_Store 
-../controller/build/*
+/controller/build/*
