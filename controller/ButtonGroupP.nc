@@ -13,13 +13,10 @@ module ButtonGroupP
 }
 implementation {
     error_t err;
-    bool stopped = false;
     uint16_t current = 0;
     bool valA, valB, valC, valD, valE, valF;
 
     command error_t ButtonGroup.start() {
-
-        stopped = false;
         current = 0;
         call PortA.clr(); //make all to low
         call PortA.makeInput();
@@ -41,11 +38,6 @@ implementation {
 
     event void Timer.fired(){
         call ButtonGroup.get();
-    }
-
-    command error_t ButtonGroup.stop() {
-        stopped = true;
-        signal ButtonGroup.stopDone(SUCCESS);
     }
 
     //假设：按键按下，则给出high，松开给出low

@@ -6,7 +6,7 @@ implementation {
     components HplMsp430GeneralIOC;
     components new TimerMilliC() as MTimer;  
 
-    ButtonGroup = ButtonGroupP;
+    ButtonGroup = ButtonGroupP.ButtonGroup;
     ButtonGroupP.PortA -> HplMsp430GeneralIOC.Port60;
     ButtonGroupP.PortB -> HplMsp430GeneralIOC.Port21;
     ButtonGroupP.PortC -> HplMsp430GeneralIOC.Port61;
