@@ -50,6 +50,34 @@ implementation {
 	  onecom[COM_POS2] = (value)|(0xF);
 	  call Resource.request();
 	}*/
+
+        void LedsBlink(nx_uint8_t blinknum){
+          nx_uint8_t one;
+          nx_uint8_t two;
+          nx_uint8_t three;
+          one = (blinknum)&(0x01);
+          two = (blinknum>>1)&(0x01);
+          three = (blinknum>>2)&(0x01);
+          if(one==0x01){
+            call Leds.led0On();
+          }
+          else{
+            call Leds.led0Off();
+          }
+          if(two==0x01){
+            call Leds.led1On();
+          }
+          else{
+            call Leds.led1Off();
+          }
+          if(three==0x01){
+            call Leds.led2On();
+          }
+          else{
+            call Leds.led2Off();
+          }
+        }        
+
 	command error_t TankAction.action(nx_uint8_t type, nx_uint16_t data){
 	  if(busy) return FAIL;
 	  busy = TRUE;
@@ -70,6 +98,7 @@ implementation {
 	  while(!call HplMsp430Usart.isTxEmpty()){}
 	  call Resource.release();
 	  busy = FALSE;
+          LedsBlink(onecom[TYPE_POS]);
 	  signal TankAction.ActionDone();
 	}
 	
