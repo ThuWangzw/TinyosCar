@@ -8,15 +8,17 @@ module ButtonGroupP
         interface HplMsp430GeneralIO as PortD;
         interface HplMsp430GeneralIO as PortE;
         interface HplMsp430GeneralIO as PortF;
+        interface Timer<TMilli> as Timer;  
     }
 }
 implementation {
     error_t err;
     bool stopped = false;
-    int current = 0;
+    uint16_t current = 0;
     bool valA, valB, valC, valD, valE, valF;
 
-    command void ButtonGroup.start() {
+    command error_t ButtonGroup.start() {
+
         stopped = false;
         current = 0;
         call PortA.clr(); //make all to low
@@ -31,10 +33,17 @@ implementation {
         call PortE.makeInput();
         call PortF.clr();
         call PortF.makeInput();
-        signal ButtonGroup.startDone(SUCCESS);
+        #ifdef SAMPLE_FREQUENCY
+            return call Timer.startPeriodic(SAMPLE_FREQUENCY);
+        #else
+            return call Timer.startPeriodic(100);
     }
 
-    command void ButtonGroup.stop() {
+    event void Timer.fired(){
+        call ButtonGroup.get();
+    }
+
+    command error_t ButtonGroup.stop() {
         stopped = true;
         signal ButtonGroup.stopDone(SUCCESS);
     }

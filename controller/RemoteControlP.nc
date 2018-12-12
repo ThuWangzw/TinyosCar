@@ -5,6 +5,7 @@ module RemoteControlP{
     uses interface Boot;   
 
     uses interface RockerPosition;
+    uses interface ButtonGroup;
 
     uses interface Packet;
     uses interface AMPacket;
@@ -40,6 +41,7 @@ implementation{
             //radio initialization succeed
             //entrance of the Rocker & Button
             call RockerPosition.start();
+            call ButtonGroup.start();
 
         }
         else{
@@ -108,6 +110,30 @@ implementation{
     }
 
     //Button event
+    event void ButtonGroup.startDone(error_t err){}
+    event void ButtonGroup.stopDone(error_t err){}
 
+    event void ButtonGroup.btnPushed(uint16_t btn) {
+        switch (btn) {
+            case 1:
+                send_message(1, 500);
+                break;
+            case 2:
+                send_message(1, -500);
+                break;
+            case 3:
+                send_message(7, 500);
+                break;
+            case 4:
+                send_message(7, -500);
+                break;
+            case 5:
+                send_message(8, 500);
+                break;
+            case 6:
+                send_message(8, -500);
+                break;
+        }
+    }
 
 }

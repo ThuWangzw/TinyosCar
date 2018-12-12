@@ -8,6 +8,7 @@ implementation{
     components new AMSenderC(AM_BLINKTORADIO);
     //Rocker and Button
     components RockerP;
+    components ButtonGroupP;
 
     //system
     App.Boot -> MainC.Boot;
@@ -20,4 +21,5 @@ implementation{
 
     //rocker & button
     App.RockerPosition -> RockerP.RockerPosition;
+    App.ButtonGroup -> ButtonGroupP.ButtonGroup;
 }
