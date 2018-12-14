@@ -81,11 +81,6 @@ implementation{
     event void AMControl.stopDone(error_t error){
 
     }
-
-    //rocker needed variables
-    uint16_t min_speed = 300,
-             delta_speed = 300,
-             speed_theshold = 50;
         
     uint16_t min_x = 2400,
              max_x = 4000,
@@ -117,8 +112,8 @@ implementation{
             LedsBlink(5);
         }
         else{
-            LedsBlink(6);
             current_type = 6;
+            LedsBlink(6);
         }   
 
         if (current_type == last_type)
