@@ -56,7 +56,7 @@ implementation{
         }
 
     event void Boot.booted(){
-        LedsBlink(1);
+        LedsBlink(7);
         call AMControl.start();
     }
 
@@ -134,28 +134,31 @@ implementation{
     event void ButtonGroup.btnPushed(uint16_t btn) {
         switch (btn) {
             case 1:
-                //LedsBlink(1);
+                LedsBlink(1);
                 //send_message(1, 500);
                 break;
             case 2:
-                //LedsBlink(2);
+                LedsBlink(2);
                 //send_message(1, -500);
                 break;
             case 3:
-                //LedsBlink(3);
+                LedsBlink(3);
                 //send_message(7, 500);
                 break;
             case 4:
-                //LedsBlink(4);
+                LedsBlink(4);
                 //send_message(7, -500);
                 break;
             case 5:
-                //LedsBlink(5);
+                LedsBlink(5);
                 //send_message(8, 500);
                 break;
             case 6:
-                //LedsBlink(6 );
+                LedsBlink(6);
                 //send_message(8, -500);
+                break;
+            default:
+                LedsBlink(7);
                 break;
         }
     }

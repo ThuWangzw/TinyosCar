@@ -47,7 +47,7 @@ implementation
       }
       posx = val;
       if (ready){
-        signal RockerPosition.processPos(posx,posy);
+        //signal RockerPosition.processPos(posx,posy);
         readx = FALSE;
         ready = FALSE;
       }
@@ -64,7 +64,7 @@ implementation
       }
       posy = val;
       if (readx){
-        signal RockerPosition.processPos(posx,posy);
+        //signal RockerPosition.processPos(posx,posy);
         readx = FALSE;
         ready = FALSE;
       }
