@@ -9,9 +9,11 @@ implementation{
     //Rocker and Button
     components RockerP;
     components ButtonGroupP;
+    components LedsC;
 
     //system
     App.Boot -> MainC.Boot;
+    App.Leds -> LedsC;
 
     //radio
     App.Packet -> AMSenderC;

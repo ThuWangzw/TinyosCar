@@ -11,6 +11,7 @@ module RemoteControlP{
     uses interface AMPacket;
     uses interface AMSend;
     uses interface SplitControl as AMControl;
+    uses interface Leds;
 }
 
 implementation{
@@ -28,6 +29,7 @@ implementation{
     }
 
     event void Boot.booted(){
+        call Leds.led0On();
         call AMControl.start();
     }
 
@@ -110,8 +112,8 @@ implementation{
     }
 
     //Button event
-    event void ButtonGroup.startDone(error_t err){}
-    event void ButtonGroup.stopDone(error_t err){}
+    //event void ButtonGroup.startDone(error_t err){}
+    //event void ButtonGroup.stopDone(error_t err){}
 
     event void ButtonGroup.btnPushed(uint16_t btn) {
         switch (btn) {

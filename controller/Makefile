@@ -1,2 +1,2 @@
-COMPONENT=RemoteControlP
+COMPONENT=RemoteControlC
 include $(MAKERULES)
