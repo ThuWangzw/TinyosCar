@@ -135,30 +135,29 @@ implementation{
         switch (btn) {
             case 1:
                 LedsBlink(1);
-                //send_message(1, 500);
+                send_message(1, 500);
                 break;
             case 2:
-                LedsBlink(2);
-                //send_message(1, -500);
+                LedsBlink(1);
+                send_message(1, -500);
                 break;
             case 3:
-                LedsBlink(3);
-                //send_message(7, 500);
+                LedsBlink(7);
+                send_message(7, 500);
                 break;
             case 4:
-                LedsBlink(4);
-                //send_message(7, -500);
+                LedsBlink(7);
+                send_message(7, -500);
                 break;
             case 5:
-                LedsBlink(5);
-                //send_message(8, 500);
+                LedsBlink(8);
+                send_message(8, 500);
                 break;
             case 6:
-                LedsBlink(6);
-                //send_message(8, -500);
+                LedsBlink(8);
+                send_message(8, -500);
                 break;
             default:
-                LedsBlink(7);
                 break;
         }
     }
