@@ -16,13 +16,14 @@ module RockerP
 implementation
 {
   uint16_t posx = 0,posy = 0;
-  bool readx = false,ready = false;
+  bool readx = FALSE,ready = FALSE;
 
   command error_t RockerPosition.start(){
     #ifdef SAMPLE_FREQUENCY
-      return call Timer.startPeriodic(SAMPLE_FREQUENCY);
+      call Timer.startPeriodic(SAMPLE_FREQUENCY);
     #else
-      return call Timer.startPeriodic(100);
+      call Timer.startPeriodic(100);
+    #endif
   }
   
   command error_t RockerPosition.getPos(){
@@ -36,40 +37,40 @@ implementation
   }
 
   event void ReadX.readDone(error_t result,uint16_t val){
-      readx = true;
+      readx = TRUE;
       if (result != SUCCESS){
-        if (ready == true){
-            readx = false;
-            ready = false;
+        if (ready == TRUE){
+            readx = FALSE;
+            ready = FALSE;
         }
         return;
       }
       posx = val;
       if (ready){
         signal RockerPosition.processPos(posx,posy);
-        readx = false;
-        ready = false;
+        readx = FALSE;
+        ready = FALSE;
       }
   }
 
   event void ReadY.readDone(error_t result,uint16_t val){
-      ready = true;
+      ready = TRUE;
       if (result != SUCCESS){
-        if(readx == true){
-          readx = false;
-          ready = false;
+        if(readx == TRUE){
+          readx = FALSE;
+          ready = FALSE;
         }
         return;
       }
       posy = val;
       if (readx){
         signal RockerPosition.processPos(posx,posy);
-        readx = false;
-        ready = false;
+        readx = FALSE;
+        ready = FALSE;
       }
   }
 
-  const msp430adc12_channel_config_t* config1 = {
+  const msp430adc12_channel_config_t config1 = {
     inch: INPUT_CHANNEL_A6,
 		sref: REFERENCE_VREFplus_AVss,
 		ref2_5v: REFVOLT_LEVEL_2_5,
@@ -80,7 +81,7 @@ implementation
     sampcon_id: SAMPCON_CLOCK_DIV_1
   };
 
-  const msp430adc12_channel_config_t* config2 = {
+  const msp430adc12_channel_config_t config2 = {
     inch: INPUT_CHANNEL_A7,
 		sref: REFERENCE_VREFplus_AVss,
 		ref2_5v: REFVOLT_LEVEL_2_5,

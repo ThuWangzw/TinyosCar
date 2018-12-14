@@ -3,12 +3,12 @@ configuration RemoteControlC{
 
 implementation{
     components MainC;
-    components RemoteControlC as App;
+    components RemoteControlP as App;
     components ActiveMessageC;
     components new AMSenderC(AM_BLINKTORADIO);
     //Rocker and Button
-    components RockerP;
-    components ButtonGroupP;
+    components RockerC;
+    components ButtonGroupC;
     components LedsC;
 
     //system
@@ -22,6 +22,6 @@ implementation{
     App.AMControl -> ActiveMessageC;
 
     //rocker & button
-    App.RockerPosition -> RockerP.RockerPosition;
-    App.ButtonGroup -> ButtonGroupP.ButtonGroup;
+    App.RockerPosition -> RockerC.RockerPosition;
+    App.ButtonGroup -> ButtonGroupC.ButtonGroup;
 }

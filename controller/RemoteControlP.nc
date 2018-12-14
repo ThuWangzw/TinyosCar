@@ -20,7 +20,7 @@ implementation{
     void send_message(uint8_t m_type, uint16_t m_data){
         if(!is_transfer){
             Message *msgpkt = (Message *)(call Packet.getPayload(&pkt,sizeof(Message)));
-            msgpkt -> nodeid = RECEIVER_NODE_ID;
+            msgpkt -> nodeid = TOS_NODE_ID;
             msgpkt -> type = m_type;
             msgpkt -> data = m_data;
             if(call AMSend.send(AM_BROADCAST_ADDR,&pkt,sizeof(Message)) == SUCCESS)
@@ -28,8 +28,35 @@ implementation{
         }
     }
 
+    void LedsBlink(nx_uint8_t blinknum){
+          nx_uint8_t one;
+          nx_uint8_t two;
+          nx_uint8_t three;
+          one = (blinknum)&(0x01);
+          two = (blinknum>>1)&(0x01);
+          three = (blinknum>>2)&(0x01);
+          if(one==0x01){
+            call Leds.led0On();
+          }
+          else{
+            call Leds.led0Off();
+          }
+          if(two==0x01){
+            call Leds.led1On();
+          }
+          else{
+            call Leds.led1Off();
+          }
+          if(three==0x01){
+            call Leds.led2On();
+          }
+          else{
+            call Leds.led2Off();
+          }
+        }
+
     event void Boot.booted(){
-        call Leds.led0On();
+        LedsBlink(1);
         call AMControl.start();
     }
 
@@ -44,7 +71,7 @@ implementation{
             //entrance of the Rocker & Button
             call RockerPosition.start();
             call ButtonGroup.start();
-
+            //send_message(6, 500);
         }
         else{
             call AMControl.start();
@@ -87,21 +114,30 @@ implementation{
         current_type = 0;
         current_speed = 0;
         if(radius < min_r){
-            current_type = 0;
+            LedsBlink(6);
+            current_type = 6;
         }
         else{
             if( angle >= pi * 0.25 && angle < pi * 0.75){
-                current_type = 1;
+                current_type = 2;
+                LedsBlink(2);
                 current_speed = min_speed + radius / dx * 2 * delta_speed;
             }
-            else if (angle >= - pi * 0.25 && angle < pi * 0.25)
-                current_type = 2;
+            else if (angle >= - pi * 0.25 && angle < pi * 0.25){
+                LedsBlink(5);
+                current_type = 5;
+            }
+                
             else if (angle >= - pi * 0.75 && angle < -pi * 0.25){
+                LedsBlink(3);
                 current_type = 3;
                 current_speed = min_speed + radius / dx * 2 * delta_speed;
             }
-            else
+            else{
+                LedsBlink(4);
                 current_type = 4;
+            }
+                
         }   
 
         if (current_type == last_type && abs(current_speed - last_speed) < speed_theshold)
@@ -118,22 +154,28 @@ implementation{
     event void ButtonGroup.btnPushed(uint16_t btn) {
         switch (btn) {
             case 1:
-                send_message(1, 500);
+                //LedsBlink(1);
+                //send_message(1, 500);
                 break;
             case 2:
-                send_message(1, -500);
+                //LedsBlink(2);
+                //send_message(1, -500);
                 break;
             case 3:
-                send_message(7, 500);
+                //LedsBlink(3);
+                //send_message(7, 500);
                 break;
             case 4:
-                send_message(7, -500);
+                //LedsBlink(4);
+                //send_message(7, -500);
                 break;
             case 5:
-                send_message(8, 500);
+                //LedsBlink(5);
+                //send_message(8, 500);
                 break;
             case 6:
-                send_message(8, -500);
+                //LedsBlink(6 );
+                //send_message(8, -500);
                 break;
         }
     }

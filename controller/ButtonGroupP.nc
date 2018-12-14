@@ -31,9 +31,10 @@ implementation {
         call PortF.clr();
         call PortF.makeInput();
         #ifdef SAMPLE_FREQUENCY
-            return call Timer.startPeriodic(SAMPLE_FREQUENCY);
+            call Timer.startPeriodic(SAMPLE_FREQUENCY);
         #else
-            return call Timer.startPeriodic(100);
+            call Timer.startPeriodic(100);
+        #endif
     }
 
     event void Timer.fired(){
@@ -42,7 +43,7 @@ implementation {
 
     //假设：按键按下，则给出high，松开给出low
     command void ButtonGroup.get() {
-        if (stopped) return // if already stopped, ignore
+        //if (stopped) return // if already stopped, ignore
         valA = call PortA.get();
         valB = call PortB.get();
         valC = call PortC.get();
@@ -61,7 +62,7 @@ implementation {
             else if (valD && (current != 4)) current = 4;
             else if (valE && (current != 5)) current = 5;
             else if (valF && (current != 6)) current = 6;
-            signal ButtonGroup.btnPushed(current);
+            //signal ButtonGroup.btnPushed(current);
         }
     }
 }
