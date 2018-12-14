@@ -87,63 +87,43 @@ implementation{
              delta_speed = 300,
              speed_theshold = 50;
         
-    uint16_t min_x = 0,
-             max_x = 0x1000,
-             min_y = 0,
-             max_y = 0x1000;
+    uint16_t min_x = 2400,
+             max_x = 4000,
+             min_y = 2400,
+             max_y = 4000;
 
     uint8_t last_type = 0;
     uint8_t current_type = 0;
-    uint16_t last_speed = 0;
-    uint16_t current_speed = 0;
-    double pi = 3.14159265;
+    uint16_t current_speed = 500;
 
     //Rocker event
     event void RockerPosition.processPos(uint16_t posx,uint16_t posy){
-
-        uint16_t cx = ( min_x + max_x ) / 2,
-                 cy = ( min_y + max_y ) / 2,
-                 dx = max_x - min_x,
-                 dy = max_y - min_y,
-                 min_r = dx * 0.3 * 0.5;
-
-
-        double angle = atan2(posy - cy,posx - cx),
-               radius = sqrt(( posy - cy)*(posy - cy) + (posx - cx)*(posx - cx));
         
         current_type = 0;
-        current_speed = 0;
-        if(radius < min_r){
-            LedsBlink(6);
-            current_type = 6;
+        if( posy > max_y){
+            current_type = 3;
+            LedsBlink(3);
+        }
+        else if( posy < min_y){
+            current_type = 2;
+            LedsBlink(2);
+        }
+        else if (posx < min_x){
+            current_type = 4;
+            LedsBlink(4);
+        }
+        else if (posx > max_x){
+            current_type = 5;
+            LedsBlink(5);
         }
         else{
-            if( angle >= pi * 0.25 && angle < pi * 0.75){
-                current_type = 2;
-                LedsBlink(2);
-                current_speed = min_speed + radius / dx * 2 * delta_speed;
-            }
-            else if (angle >= - pi * 0.25 && angle < pi * 0.25){
-                LedsBlink(5);
-                current_type = 5;
-            }
-                
-            else if (angle >= - pi * 0.75 && angle < -pi * 0.25){
-                LedsBlink(3);
-                current_type = 3;
-                current_speed = min_speed + radius / dx * 2 * delta_speed;
-            }
-            else{
-                LedsBlink(4);
-                current_type = 4;
-            }
-                
+            LedsBlink(6);
+            current_type = 6;
         }   
 
-        if (current_type == last_type && abs(current_speed - last_speed) < speed_theshold)
+        if (current_type == last_type)
             return;
         last_type = current_type;
-        last_speed = current_speed;
         send_message(current_type,current_speed);
     }
 
