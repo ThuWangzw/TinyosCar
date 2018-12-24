@@ -14,10 +14,13 @@ module ButtonGroupP
 implementation {
     error_t err;
     uint16_t current = 0;
+    uint16_t previous = 0;
     bool valA, valB, valC, valD, valE, valF;
+    // bool old_valA, old_valB, old_valC, old_valD, old_valE, old_valF;
 
     command error_t ButtonGroup.start() {
         current = 0;
+        previous = 0;
         call PortA.clr(); //make all to low
         call PortA.makeInput();
         call PortB.clr();
@@ -30,10 +33,13 @@ implementation {
         call PortE.makeInput();
         call PortF.clr();
         call PortF.makeInput();
-        #ifdef SAMPLE_FREQUENCY
-            return call Timer.startPeriodic(SAMPLE_FREQUENCY);
-        #else
-            return call Timer.startPeriodic(100);
+        valA = FALSE; valB = FALSE; valC = FALSE;
+        valD = FALSE; valE = FALSE; valF = FALSE;
+        // #ifdef SAMPLE_FREQUENCY
+        // call Timer.startPeriodic(SAMPLE_FREQUENCY);
+        // #else
+        call Timer.startPeriodic(200);
+        // #endif
     }
 
     event void Timer.fired(){
@@ -42,26 +48,27 @@ implementation {
 
     //假设：按键按下，则给出high，松开给出low
     command void ButtonGroup.get() {
-        if (stopped) return // if already stopped, ignore
         valA = call PortA.get();
         valB = call PortB.get();
         valC = call PortC.get();
         valD = call PortD.get();
         valE = call PortE.get();
         valF = call PortF.get();
-
-        //no btn is pushed
-        if (!valA && !valB && !valC && !valD && !valE && !valF)
-            current = 0;
-        else {
-            // have the ability to replace original one when it is pushed
-            if (valA && (current != 1)) current = 1;
-            else if (valB && (current != 2)) current = 2;
-            else if (valC && (current != 3)) current = 3;
-            else if (valD && (current != 4)) current = 4;
-            else if (valE && (current != 5)) current = 5;
-            else if (valF && (current != 6)) current = 6;
+        
+        if (!valA && !valB) current = 4;
+        else if (!valA) current = 1;
+        else if (!valB) current = 2;
+        else if (!valC) current = 3;
+        else if (!valE) current = 5;
+        else if (!valF) current = 6;
+        else current = 0;
+        
+        // // 只有大于0才给
+        if (current > 0 && current < 7)
             signal ButtonGroup.btnPushed(current);
-        }
+        
+        // 保存旧值
+        // old_valA = valA; old_valB = valB; old_valC = valC;
+        // old_valD = valD; old_valE = valE; old_valF = valF;
     }
 }

@@ -15,5 +15,5 @@ implementation
   RockerP.ReadY -> AdcY.Read;
   RockerP.ConfigX <- AdcX.AdcConfigure;
   RockerP.ConfigY <- AdcY.AdcConfigure;
-  RockerP.Timer <- MTimer.Timer;
+  RockerP.Timer -> MTimer.Timer;
 }

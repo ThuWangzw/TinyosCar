@@ -13,5 +13,5 @@ implementation {
     ButtonGroupP.PortD -> HplMsp430GeneralIOC.Port23;
     ButtonGroupP.PortE -> HplMsp430GeneralIOC.Port62;
     ButtonGroupP.PortF -> HplMsp430GeneralIOC.Port26;
-    ButtonGroupP.Timer <- MTimer.Timer;
+    ButtonGroupP.Timer -> MTimer.Timer;
 }
