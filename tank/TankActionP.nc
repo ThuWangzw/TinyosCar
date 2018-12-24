@@ -19,38 +19,23 @@ implementation {
 	bool busy = FALSE;
 	nx_uint16_t i;
 	msp430_uart_union_config_t uart_config = {{
-		ubr:UMCTL_1MHZ_115200,
-		umctl:UMCTL_1MHZ_115200,
-		mm:0,
-		listen:0,
-		clen:1,
-		spb:0,
-		pev:0,
-		pena:1,//open paritymode
-		urxse:0,
-		ssel:2,
-		ckpl:0,
-		urxwie:0,
-		urxeie:0,
-		utxe:1,
-		urxe:1
-	}};/*
-	command error_t Steer1(uint16_t value){
-	  if(busy) return FAIL;
-	  onecom[TYPE_POS] = 0x01;
-	  onecom[COM_POS1] = (value>>8)|(0xF);
-	  onecom[COM_POS2] = (value)|(0xF);
-	  call Resource.request();
-    }
-	
-	command error_t Forward(uint16_t value){
-	  if(busy) return FAIL;
-	  onecom[TYPE_POS] = 0x02;
-	  onecom[COM_POS1] = (value>>8)|(0xF);
-	  onecom[COM_POS2] = (value)|(0xF);
-	  call Resource.request();
-	}*/
-
+		utxe : 1,
+		urxe : 1,
+		ubr : UBR_1MHZ_115200,
+		umctl : UMCTL_1MHZ_115200,
+		ssel : 0x02,
+		pena : 0,
+		pev : 0,
+		spb : 0,
+		clen : 1,
+		listen : 0,
+		mm : 0,
+		ckpl : 0,
+		urxse : 0,
+		urxeie : 0,
+		urxwie : 0
+	}};
+	nx_uint16_t angle[3]={3000,3000,3000};
         void LedsBlink(nx_uint8_t blinknum){
           nx_uint8_t one;
           nx_uint8_t two;
@@ -77,23 +62,43 @@ implementation {
             call Leds.led2Off();
           }
         }        
+	void UpdateSteer(nx_uint8_t type, nx_int16_t delta){
+	  if(type==0x01){
+		angle[0] = (nx_uint16_t)((nx_int16_t)angle[0]+delta);
+		onecom[3] = (angle[0]>>8)&(0xF);
+		onecom[4] = (angle[0])&(0xF);
+	  }
+	  else if(type>0x06){
+		angle[type-6] = (nx_uint16_t)((nx_int16_t)angle[type-6]+delta);
+		onecom[3] = (nx_uint8_t)(angle[type-6]>>8)&(0xF);
+		onecom[4] = (nx_uint8_t)(angle[type-6])&(0xF);
+  	  }
+        }
 
+        command void TankAction.Start(){
+
+        }
 	command error_t TankAction.action(nx_uint8_t type, nx_uint16_t data){
 	  if(busy) return FAIL;
 	  busy = TRUE;
 	  onecom[TYPE_POS] = type;
 	  onecom[COM_POS1] = (data>>8)|(0xF);
 	  onecom[COM_POS2] = (data)|(0xF);
+	  UpdateSteer(type,(nx_int16_t)data);
 	  call Resource.request();
 	  return SUCCESS;
+	}
+
+	void shitfunc(nx_uint16_t j){
+	  while(!call HplMsp430Usart.isTxEmpty()){}
+		call HplMsp430Usart.tx(onecom[j]);
 	}
 	
 	event void Resource.granted(){
 	  call HplMsp430Usart.setModeUart(&uart_config);
           call HplMsp430Usart.enableUart();
 	  for(i=0; i<8; i++){
-	    while(!call HplMsp430Usart.isTxEmpty()){}
-		call HplMsp430Usart.tx(onecom[i]);
+	    shitfunc(i);
 	  }
 	  while(!call HplMsp430Usart.isTxEmpty()){}
 	  call Resource.release();
@@ -102,7 +107,5 @@ implementation {
 	  signal TankAction.ActionDone();
 	}
 	
-        command void TankAction.Start(){
-
-        }
+	
 }

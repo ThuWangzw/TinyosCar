@@ -13,17 +13,29 @@ implementation {
   nx_uint8_t begin;
   nx_uint8_t end;
   bool busy = FALSE;
-  event void Boot.booted() {
-    begin = 0;
-    end = 0;
-    call AMControl.start();
-  }
-  void cpMessage(Message* msg){
+
+ void cpMessage(Message* msg){
     Msg[end].nodeid = msg->nodeid;
 	Msg[end].type = msg->type;
 	Msg[end].data = msg->data;
 	end = (end + 1)%BUFFER_LEN;
   }
+
+  void runcommand(){
+    if((begin==end)||(busy)) return;//buffer is empty or is sending command
+    //run
+	busy = TRUE;
+	now = Msg+begin;
+	call tank.action(now->type, now->data);
+	begin = (begin + 1)%BUFFER_LEN;
+  }
+  
+  event void Boot.booted() {
+    begin = 0;
+    end = 0;
+    call AMControl.start();
+  }
+  
   
   event void AMControl.startDone(error_t err) {
     if (err != SUCCESS) {
@@ -34,38 +46,7 @@ implementation {
   event void AMControl.stopDone(error_t err) {
   }
 
-  void runcommand(){
-    if((begin==end)||(busy)) return;//buffer is empty or is sending command
-    //run
-	busy = TRUE;
-	now = Msg+begin;/*
-	if(now->type == 0x01){
-	  call tank.Steer1(now->value);
-	}
-	else if(now->type == 0x02){
-	  call tank.Forward(now->value);
-	}
-	else if(now->type == 0x03){
-	  call tank.Back(now->value);
-	}
-	else if(now->type == 0x04){
-	  call tank.Left(now->value);
-	}
-	else if(now->type == 0x05){
-	  call tank.Right(now->value);
-	}
-	else if(now->type == 0x06){
-	  call tank.Pause();
-	}
-	else if(now->type == 0x07){
-	  call tank.Steer2(now->value);
-	}
-	else if(now->type == 0x08){
-	  call tank.Steer3(now->value);
-	}*/
-	call tank.action(now->type, now->data);
-	begin = (begin + 1)%BUFFER_LEN;
-  }
+  
   
   event void tank.ActionDone(){
     busy = FALSE;
