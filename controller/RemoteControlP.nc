@@ -82,9 +82,9 @@ implementation{
 
     }
         
-    uint16_t min_x = 2400,
-             max_x = 4000,
-             min_y = 2400,
+    uint16_t min_x = 1200,
+             max_x = 2400,
+             min_y = 1000,
              max_y = 4000;
 
     uint8_t last_type = 0;

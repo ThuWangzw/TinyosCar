@@ -1,13 +1,13 @@
 <tos_image>
   <ident>
-    <deluge_support>no</deluge_support>
-    <username>root</username>
-    <appname>TankMainAppC</appname>
-    <timestamp>5C13BB61L</timestamp>
-    <userhash>A3473BA6L</userhash>
-    <hostname>ubuntu</hostname>
     <platform>telosb</platform>
-    <uidhash>FA2960D3L</uidhash>
+    <timestamp>5C218CEFL</timestamp>
+    <username>root</username>
+    <userhash>0E1ABB3FL</userhash>
+    <uidhash>A5162A04L</uidhash>
+    <hostname>PooLei</hostname>
+    <deluge_support>no</deluge_support>
+    <appname>TankMainAppC</appname>
   </ident>
   <image format="ihex">
 :104000005542200135D0085A82454A1431400039C2
